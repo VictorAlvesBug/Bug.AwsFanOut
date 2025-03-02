@@ -17,12 +17,32 @@ public class DynamoDbService
 	{
 		var chain = new CredentialProfileStoreChain();
 
-		if (chain.TryGetAWSCredentials("default", out var credentials))
+		if (!chain.TryGetAWSCredentials("default", out var credentials))
+			throw new Exception("Não foi possível utilizar as credenciais para conectar à AWS");
+
+		_dynamoDbClient = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast1);
+	}
+
+	public async Task<List<Integration>> GetAllAsync()
+	{
+		try
 		{
-			_dynamoDbClient = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast1);
+			var request = new ScanRequest
+			{
+				TableName = TableName
+			};
+
+			var response = await _dynamoDbClient.ScanAsync(request);
+
+			return response.Items.ConvertAll(item => item.ToJson())
+				.ConvertAll(json => JsonConvert.DeserializeObject<Integration>(json));
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao recuperar item: {ex.Message}");
 		}
 
-		throw new Exception("Não foi possível utilizar as credenciais para conectar à AWS");
+		return [];
 	}
 
 	public async Task<Integration?> GetItemAsync(string pk, decimal sk)

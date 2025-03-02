@@ -19,18 +19,20 @@ namespace Bug.Infrastructure.Services
 		{
 			var chain = new CredentialProfileStoreChain();
 
-			if (chain.TryGetAWSCredentials("default", out var credentials))
+			if (!chain.TryGetAWSCredentials("default", out var credentials))
 			{
-				_snsClient = new AmazonSimpleNotificationServiceClient(credentials, RegionEndpoint.USEast1);
+				throw new Exception("Credenciais não encontradas");
 			}
+
+			_snsClient = new AmazonSimpleNotificationServiceClient(credentials, RegionEndpoint.USEast1);
 		}
 
-		public Task PublishMessageAsync(string topicArn, string message)
+		public async Task PublishMessageAsync(string topicArn, string message)
 		{
-			PublishFifoMessageAsync(topicArn, message, null, null);
+			await PublishFifoMessageAsync(topicArn, message, null);
 		}
 
-		public async Task PublishFifoMessageAsync(string topicArn, string message, string messageGroupId)
+		public async Task PublishFifoMessageAsync(string topicArn, string message, string? messageGroupId)
 		{
 			var request = new PublishRequest
 			{

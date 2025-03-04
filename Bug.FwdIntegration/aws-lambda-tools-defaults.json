@@ -20,5 +20,8 @@
     "package-type"          : "Zip",
     "tracing-mode"          : "PassThrough",
     "environment-variables" : "",
-    "image-tag"             : ""
+    "image-tag"             : "",
+    "function-role"         : "arn:aws:iam::571600868266:role/default",
+    "function-subnets"      : "",
+    "function-security-groups" : ""
 }

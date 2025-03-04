@@ -36,7 +36,7 @@ public class Function
 
 				var message = JsonConvert.SerializeObject(integration);
 
-				await snsService.PublishFifoMessageAsync(topicArn, message, integration.FifoMessageGroupId);
+				await snsService.PublishFifoMessageAsync(topicArn, integration.Type, message, integration.FifoMessageGroupId);
 			}
 		}
 	}

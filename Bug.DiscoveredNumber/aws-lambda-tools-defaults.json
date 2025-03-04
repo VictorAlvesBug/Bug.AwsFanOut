@@ -12,16 +12,15 @@
     "function-runtime" : "dotnet8",
     "function-memory-size" : 512,
     "function-timeout"     : 30,
-    "function-handler"     : "Bug.SecondLambda::Bug.SecondLambda.Function::FunctionHandler",
+    "function-handler"     : "Bug.DiscoveredNumber::Bug.DiscoveredNumber.Function::FunctionHandler",
     "framework"            : "net8.0",
-    "function-name"        : "Bug-SecondLambda",
+    "function-name"        : "Bug-DiscoveredNumber",
     "package-type"         : "Zip",
-    "function-role"        : "arn:aws:iam::571600868266:role/lambda_exec_Bug-SecondLambda",
+    "function-role"        : "arn:aws:iam::571600868266:role/lambda_exec_Bug-DiscoveredNumber",
     "function-architecture" : "x86_64",
     "function-subnets"      : "",
     "function-security-groups" : "",
     "tracing-mode"             : "PassThrough",
     "environment-variables"    : "",
-    "image-tag"                : "",
-    "function-description"     : ""
+    "image-tag"                : ""
 }

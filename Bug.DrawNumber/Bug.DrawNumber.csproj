@@ -15,4 +15,8 @@
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.4" />
     <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.2.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bug.Domain\Bug.Domain.csproj" />
+    <ProjectReference Include="..\Bug.Infrastructure\Bug.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>

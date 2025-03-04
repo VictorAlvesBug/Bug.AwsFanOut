@@ -1,30 +1,35 @@
 ﻿using Bug.Domain.Entities;
+using Bug.Helpers.Extensions;
 using Bug.Infrastructure.Services;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
 var _dynamoDbService = new DynamoDbService();
 
 var options = new Dictionary<string, Func<Task>>
 {
 	{
-		"Salvar Nova Integração",
+		"Salvar Nova Integração de DrawNumber",
 		async () =>
 		{
-			var messageGroupId = "groupId-0";
+			const string messageGroupId = "groupId-0";
+
+			var drawNumberPayload = new DrawNumberPayload{
+				 MinLimit = 0,
+				 MaxLimit = 100
+			};
 
 			var itemToPut = new Integration
 			{
 				PK = Guid.NewGuid().ToString(),
 				SK = (decimal)DateTime.Now.ToOADate(),
 				Status = IntegrationStatus.Pending,
-				Body = JsonConvert.SerializeObject(new { MessageGroupId = messageGroupId, AnotherField = DateTime.Now }),
-				FifoMessageGroupId = messageGroupId
+				Type = IntegrationType.DrawNumber,
+				Body = drawNumberPayload.ToJson(),
+				//Body = JsonConvert.SerializeObject(new { MessageGroupId = messageGroupId, AnotherField = DateTime.Now }),
+				FifoMessageGroupId = messageGroupId,
+				CreatedAt = DateTime.Now
 			};
 
 			await _dynamoDbService.PutItemAsync(itemToPut);
-
-			var item = await _dynamoDbService.GetItemAsync(itemToPut.PK, itemToPut.SK);
 		}
 	},
 	{
@@ -33,56 +38,12 @@ var options = new Dictionary<string, Func<Task>>
 		{
 			var list = await _dynamoDbService.GetAllAsync();
 
-			PrintTable(list);
-			//Console.WriteLine(JsonConvert.SerializeObject(list, Formatting.Indented));
+			list.PrintTable();
 		}
 	}
 };
 
-void PrintTable<T>(List<T> list)
-{
-	if (list is null)
-		throw new ArgumentNullException(nameof(list));
 
-	if (list.Count == 0)
-		return;
-
-	Dictionary<string, int> columnsLength = 
-		list.FirstOrDefault()
-		.GetType().GetProperties()
-		.Select(prop => new KeyValuePair<string, int>(prop.Name, prop.Name.Length ))
-		.ToDictionary();
-
-	foreach (var item in list)
-	{
-		item.GetType().GetProperties()
-			.ToList().ForEach((prop) => {
-				columnsLength[prop.Name] =
-					Math.Max(columnsLength[prop.Name], Convert.ToInt32(prop.GetValue(item).ToString().Length));
-			});
-	}
-	
-	columnsLength
-		.ToList().ForEach((kvp) =>
-		{
-			var (name, length) = kvp;
-			Console.Write($"{kvp.Key.PadRight(length, ' ')} | ");
-		});
-
-	Console.WriteLine();
-
-	foreach (var item in list)
-	{
-
-		item.GetType().GetProperties()
-			.ToList().ForEach((prop) => {
-				var length = columnsLength[prop.Name];
-				Console.Write($"{prop.GetValue(item).ToString().PadRight(length, ' ')} | ");
-			});
-
-		Console.WriteLine();
-	}
-}
 
 bool ConfirmBeforeExecute(string message)
 {

@@ -34,8 +34,8 @@ public class DynamoDbService
 
 			var response = await _dynamoDbClient.ScanAsync(request);
 
-			return response.Items.ConvertAll(item => item.ToJson())
-				.ConvertAll(json => JsonConvert.DeserializeObject<Integration>(json));
+			return response.Items
+				.ConvertAll(item => JsonConvert.DeserializeObject<Integration>(item.ToJson()) ?? new Integration());
 		}
 		catch (Exception ex)
 		{
@@ -84,8 +84,10 @@ public class DynamoDbService
 				{ nameof(Integration.PK), new AttributeValue { S = integration.PK } },
 				{ nameof(Integration.SK), new AttributeValue { N = integration.SK.ToString().Replace(",", ".") } },
 				{ nameof(Integration.Status), new AttributeValue { N = ((int)integration.Status).ToString() } },
+				{ nameof(Integration.Type), new AttributeValue { N = ((int)integration.Type).ToString() } },
 				{ nameof(Integration.Body), new AttributeValue { S = integration.PK } },
 				{ nameof(Integration.FifoMessageGroupId), new AttributeValue { S = integration.FifoMessageGroupId } },
+				{ nameof(Integration.CreatedAt), new AttributeValue { S = integration.CreatedAt.ToString("o") } },
 			};
 
 			var request = new PutItemRequest

@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Lambdas", "01 - Lambda
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00 - Tests", "00 - Tests", "{7A937ABD-40FF-4513-9F01-E4F4FB0DE360}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.FirstLambda", "Bug.FirstLambda\Bug.FirstLambda.csproj", "{B06CCDC3-866D-4699-B545-0E2BF3E441EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.DrawNumber", "Bug.DrawNumber\Bug.DrawNumber.csproj", "{B06CCDC3-866D-4699-B545-0E2BF3E441EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.SecondLambda", "Bug.SecondLambda\Bug.SecondLambda.csproj", "{782CA4CC-4325-4A2B-B1D3-474A25F7FC3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.TryNumber", "Bug.TryNumber\Bug.TryNumber.csproj", "{782CA4CC-4325-4A2B-B1D3-474A25F7FC3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.ThirdLambda", "Bug.ThirdLambda\Bug.ThirdLambda.csproj", "{639D2557-E4B2-47B8-AC3C-0819E57D2695}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bug.DiscoveredNumber", "Bug.DiscoveredNumber\Bug.DiscoveredNumber.csproj", "{639D2557-E4B2-47B8-AC3C-0819E57D2695}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using Amazon.Lambda.SQSEvents;
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
-namespace Bug.SecondLambda;
+namespace Bug.DiscoveredNumber;
 
 public class Function
 {
@@ -18,7 +18,7 @@ public class Function
     /// <returns></returns>
     public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
 	{
-		context.Logger.LogInformation("Chegou à FirstLambda");
+		context.Logger.LogInformation("Chegou à DiscoveredNumber");
 
 		foreach (var message in evnt.Records)
         {

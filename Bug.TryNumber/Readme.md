@@ -40,12 +40,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "Bug.FirstLambda/test/Bug.FirstLambda.Tests"
+    cd "Bug.TryNumber/test/Bug.TryNumber.Tests"
     dotnet test
 ```
 
 Deploy function to AWS Lambda
 ```
-    cd "Bug.FirstLambda/src/Bug.FirstLambda"
+    cd "Bug.TryNumber/src/Bug.TryNumber"
     dotnet lambda deploy-function
 ```

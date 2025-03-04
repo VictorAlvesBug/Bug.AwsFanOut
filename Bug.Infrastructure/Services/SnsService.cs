@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
+using Bug.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,19 +28,30 @@ namespace Bug.Infrastructure.Services
 			_snsClient = new AmazonSimpleNotificationServiceClient(credentials, RegionEndpoint.USEast1);
 		}
 
-		public async Task PublishMessageAsync(string topicArn, string message)
+		public async Task PublishMessageAsync(string topicArn, IntegrationType integrationType, string message)
 		{
-			await PublishFifoMessageAsync(topicArn, message, null);
+			await PublishFifoMessageAsync(topicArn, integrationType, message, null);
 		}
 
-		public async Task PublishFifoMessageAsync(string topicArn, string message, string? messageGroupId)
+		public async Task PublishFifoMessageAsync(string topicArn, IntegrationType integrationType, string message, string? messageGroupId)
 		{
 			var request = new PublishRequest
 			{
 				TopicArn = topicArn,
 				Message = message,
 				MessageGroupId = messageGroupId,
-				MessageDeduplicationId = Guid.NewGuid().ToString()
+				MessageDeduplicationId = Guid.NewGuid().ToString(),
+				MessageAttributes = new Dictionary<string, MessageAttributeValue>
+				{
+					{
+						nameof(IntegrationType),
+						new MessageAttributeValue
+						{
+							DataType = nameof(String),
+							StringValue = integrationType.ToString()
+						}
+					}
+				}
 			};
 
 			var response = await _snsClient.PublishAsync(request);

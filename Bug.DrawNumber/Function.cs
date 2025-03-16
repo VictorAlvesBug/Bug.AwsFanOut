@@ -4,6 +4,7 @@ using Bug.Domain.Entities.DrawNumber;
 using Bug.Domain.Entities.Integration;
 using Bug.Helpers.Extensions;
 using Bug.Infrastructure.Services;
+using Microsoft.VisualBasic;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.

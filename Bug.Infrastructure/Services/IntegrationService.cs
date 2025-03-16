@@ -2,8 +2,10 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime.CredentialManagement;
+using Amazon.SimpleNotificationService;
 using Bug.Domain.Entities.Integration;
 using Bug.Helpers.Extensions;
+using Bug.Helpers.Utils;
 using Newtonsoft.Json;
 
 namespace Bug.Infrastructure.Services;
@@ -15,12 +17,12 @@ public class IntegrationService
 
 	public IntegrationService()
 	{
-		var chain = new CredentialProfileStoreChain();
+		/*var chain = new CredentialProfileStoreChain();
 
 		if (!chain.TryGetAWSCredentials("default", out var credentials))
-			throw new Exception("Não foi possível utilizar as credenciais para conectar à AWS");
+			throw new Exception("Não foi possível utilizar as credenciais para conectar à AWS");*/
 
-		_dynamoDbClient = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast1);
+		_dynamoDbClient = new AmazonDynamoDBClient();
 	}
 
 	public async Task<List<Integration>> GetAllAsync()
@@ -81,13 +83,13 @@ public class IntegrationService
 
 			var item = new Dictionary<string, AttributeValue>
 			{
-				{ nameof(Integration.PK), new AttributeValue { S = integration.PK } },
-				{ nameof(Integration.SK), new AttributeValue { S = integration.SK } },
-				{ nameof(Integration.Status), new AttributeValue { N = ((int)integration.Status).ToString() } },
-				{ nameof(Integration.Type), new AttributeValue { N = ((int)integration.Type).ToString() } },
-				{ nameof(Integration.Body), new AttributeValue { S = integration.Body } },
-				{ nameof(Integration.FifoMessageGroupId), new AttributeValue { S = integration.FifoMessageGroupId } },
-				{ nameof(Integration.CreatedAt), new AttributeValue { S = integration.CreatedAt.ToString("o") } },
+				{ nameof(Integration.PK), integration.PK.ConvertToAttributeValue() },
+				{ nameof(Integration.SK), integration.SK.ConvertToAttributeValue() },
+				{ nameof(Integration.Status), integration.Status.ConvertToAttributeValue() },
+				{ nameof(Integration.Type), integration.Type.ConvertToAttributeValue() },
+				{ nameof(Integration.Body), integration.Body.ConvertToAttributeValue() },
+				{ nameof(Integration.FifoMessageGroupId), integration.FifoMessageGroupId.ConvertToAttributeValue() },
+				{ nameof(Integration.CreatedAt), integration.CreatedAt.ToString("o").ConvertToAttributeValue() },
 			};
 
 			var request = new PutItemRequest
@@ -103,4 +105,38 @@ public class IntegrationService
 			Console.WriteLine($"Erro ao salvar item: {ex.Message}");
 		}
 	}
+
+	public async Task UpdateAttributesAsync(Integration integration, List<string> attributesToUpdate = null)
+	{
+		try
+		{
+			if (attributesToUpdate == null)
+			{
+				attributesToUpdate = integration.GetType().GetProperties()
+					.Select(prop => prop.Name)
+					.Where(propName => !new List<string> { nameof(Integration.PK), nameof(Integration.SK) }.Contains(propName))
+					.ToList();
+			}
+
+			var request = new UpdateItemRequest
+			{
+				TableName = TableName,
+				Key = new Dictionary<string, AttributeValue>
+				{
+					{ nameof(Integration.PK), integration.PK.ConvertToAttributeValue() },
+					{ nameof(Integration.SK), integration.SK.ConvertToAttributeValue() }
+				},
+				UpdateExpression = attributesToUpdate.BuildUpdateExpression(),
+				ExpressionAttributeNames = attributesToUpdate.BuildExpressionAttributeNames(),
+				ExpressionAttributeValues = attributesToUpdate.BuildExpressionAttributeValues(integration)
+			};
+
+			await _dynamoDbClient.UpdateItemAsync(request);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao atualizar atributo: {ex.Message}");
+		}
+	}
+
 }

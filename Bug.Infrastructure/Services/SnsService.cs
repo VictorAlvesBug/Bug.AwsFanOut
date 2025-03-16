@@ -12,14 +12,14 @@ namespace Bug.Infrastructure.Services
 
 		public SnsService()
 		{
-			var chain = new CredentialProfileStoreChain();
+			/*var chain = new CredentialProfileStoreChain();
 
 			if (!chain.TryGetAWSCredentials("default", out var credentials))
 			{
 				throw new Exception("Credenciais não encontradas");
-			}
+			}*/
 
-			_snsClient = new AmazonSimpleNotificationServiceClient(credentials, RegionEndpoint.USEast1);
+			_snsClient = new AmazonSimpleNotificationServiceClient();
 		}
 
 		public async Task PublishMessageAsync(string topicArn, IntegrationType integrationType, string message)

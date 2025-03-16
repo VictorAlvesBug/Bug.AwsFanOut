@@ -9,6 +9,7 @@
 		public string Body { get; set; }
 		public string FifoMessageGroupId { get; set; }
 		public DateTime CreatedAt { get; set; }
+		public string ResponseMessage { get; set; }
 
 		public Integration()
 		{

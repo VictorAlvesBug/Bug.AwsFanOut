@@ -75,6 +75,8 @@ async Task OpenMenuAsync()
 
 		var indexSelected = Console.ReadLine();
 
+		Console.Clear();
+
 		var isValid = int.TryParse(indexSelected, out var intIndexSelected)
 			&& intIndexSelected >= 1
 			&& intIndexSelected <= options.Count;
